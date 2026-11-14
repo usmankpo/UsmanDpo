@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Smart AI Translator & Tools</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap">
+<style>
+/* Digital World Map & Glowing Network Canvas */
+#map-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+:root {
+  --bg: #0f172a;
+  --surface: rgba(30, 41, 59, 0.9);
+  --fg: #f8fafc;
+  --muted: #94a3b8;
+  --line: #334155;
+  --accent: #0284c7;
+  --accent-hover: #0369a1;
+  --focus: #38bdf8;
+  --ui: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+  --urdu: "Noto Nastaliq Urdu", serif;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 20px 16px 40px;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--ui);
+  min-height: 100vh;
+  position: relative;
+}
+
+.wrap {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Top Navigation Tabs */
+.nav-tabs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+.tab-btn {
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+.tab-btn.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+/* Header */
+header {
+  text-align: center;
+  margin-bottom: 5px;
+}
+.eyebrow { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: #38bdf8; font-weight: 500; margin: 0 0 4px; }
+h1 { margin: 0; font-size: 26px; font-weight: 600; }
+.lede { margin: 6px 0 0; color: var(--muted); font-size: 14px; }
+
+/* Main Card */
+section {
+  background: var(--surface);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.translator-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+@media (max-width: 650px) {
+  .translator-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.box-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.box-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 500;
+}
+textarea {
+  width: 100%;
+  height: 160px;
+  background: #0b1329;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px;
+  color: var(--fg);
+  font-family: inherit;
+  font-size: 16px;
+  resize: vertical;
+  transition: border-color 0.2s;
+}
+textarea:focus {
+  outline: none;
+  border-color: var(--focus);
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+}
+textarea.urdu-text {
+  font-family: var(--urdu);
+  direction: rtl;
+  font-size: 17px;
+}
+
+.action-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  border-top: 1px solid var(--line);
+  padding-top: 14px;
+}
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-primary:hover { background: var(--accent-hover); }
+
+.status-text {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.coming-soon {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--muted);
+}
+</style>
+</head>
+<body>
+
+<!-- Background Glowing Network Animation Canvas -->
+<canvas id="map-canvas"></canvas>
+
+<main class="wrap">
+  <header>
+    <p class="eyebrow">Usman &amp; Abdullah &middot; AI Suite</p>
+    <h1>Smart Multi-Tool Portal</h1>
+    <p class="lede">Fast, automated real-time translation between English and Urdu.</p>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="switchTab(0)">English &harr; Urdu Translator</button>
+    <button class="tab-btn" onclick="switchTab(1)">Text Summarizer (Soon)</button>
+    <button class="tab-btn" onclick="switchTab(2)">Grammar Checker (Soon)</button>
+  </div>
+
+  <!-- Tab 1: Translator Section -->
+  <div id="tab-content-0" class="tab-pane">
+    <section>
+      <h2>English to Urdu Translator</h2>
+      <div class="translator-grid">
+        <div class="box-group">
+          <div class="box-header">
+            <span>English (Type here)</span>
+            <button type="button" onclick="clearBox('en1')" style="background:none; border:none; color:var(--muted); cursor:pointer; font-size:12px;">Clear</button>
+          </div>
+          <textarea id="en1" placeholder="Type English text here..." oninput="autoTranslate('en-ur')"></textarea>
+        </div>
+        <div class="box-group">
+          <div class="box-header">
+            <span>Urdu (Auto Translation)</span>
+            <button type="button" onclick="copyText('ur1')" style="background:none; border:none; color:var(--muted); cursor:pointer; font-size:12px;">Copy</button>
+          </div>
+          <textarea id="ur1" class="urdu-text" placeholder="اردو ترجمہ یہاں آئے گا..." readonly></textarea>
+        </div>
+      </div>
+    </section>
+
+    <section style="margin-top: 20px;">
+      <h2>Urdu to English Translator</h2>
+      <div class="translator-grid">
+        <div class="box-group">
+          <div class="box-header">
+            <span>Urdu (یہاں اردو لکھیں)</span>
+            <button type="button" onclick="clearBox('ur2')" style="background:none; border:none; color:var(--muted); cursor:pointer; font-size:12px;">Clear</button>
+          </div>
+          <textarea id="ur2" class="urdu-text" placeholder="کوئی سا بھی جملہ اردو میں لکھیں..." oninput="autoTranslate('ur-en')"></textarea>
+        </div>
+        <div class="box-group">
+          <div class="box-header">
+            <span>English (Auto Translation)</span>
+            <button type="button" onclick="copyText('en2')" style="background:none; border:none; color:var(--muted); cursor:pointer; font-size:12px;">Copy</button>
+          </div>
+          <textarea id="en2" placeholder="English translation will appear here..." readonly></textarea>
+        </div>
+      </div>
+      <div class="action-row">
+        <span class="status-text" id="status-msg">Ready for live translation...</span>
+        <button type="button" class="btn-primary" onclick="clearAll()">Reset All</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- Tab 2 & 3 Placeholders -->
+  <div id="tab-content-1" class="tab-pane" style="display:none;">
+    <section class="coming-soon">
+      <h2>Text Summarizer</h2>
+      <p>This module is currently under development. Stay tuned!</p>
+    </section>
+  </div>
+
+  <div id="tab-content-2" class="tab-pane" style="display:none;">
+    <section class="coming-soon">
+      <h2>Grammar Checker</h2>
+      <p>This module will be available in the next update.</p>
+    </section>
+  </div>
+</main>
+
+<script>
+// Background Map & Network Nodes Animation
+(function() {
+  const canvas = document.getElementById('map-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+
+  const mapOutlines = [
+    {x: 0.08, y: 0.20}, {x: 0.14, y: 0.32}, {x: 0.20, y: 0.24}, {x: 0.26, y: 0.45}, {x: 0.18, y: 0.58},
+    {x: 0.30, y: 0.65}, {x: 0.36, y: 0.82}, {x: 0.25, y: 0.90},
+    {x: 0.45, y: 0.20}, {x: 0.52, y: 0.16}, {x: 0.58, y: 0.30}, {x: 0.42, y: 0.36},
+    {x: 0.46, y: 0.48}, {x: 0.54, y: 0.68}, {x: 0.45, y: 0.84},
+    {x: 0.60, y: 0.20}, {x: 0.70, y: 0.26}, {x: 0.82, y: 0.22}, {x: 0.90, y: 0.36}, {x: 0.75, y: 0.50}, {x: 0.64, y: 0.44},
+    {x: 0.88, y: 0.75}, {x: 0.96, y: 0.88}
+  ];
+
+  let nodes = [];
+  function initMap() {
+    nodes = [];
+    mapOutlines.forEach((pt) => {
+      nodes.push({
+        x: pt.x * canvas.width,
+        y: pt.y * canvas.height,
+        baseX: pt.x * canvas.width,
+        baseY: pt.y * canvas.height,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        pulse: Math.random() * Math.PI,
+        pulseSpeed: 0.04 + Math.random() * 0.03,
+        radius: 2 + Math.random() * 2
+      });
+    });
+  }
+  initMap();
+  window.addEventListener('resize', initMap);
+
+  function animateMap() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (let i = 0; i < nodes.length; i++) {
+      let n = nodes[i];
+      n.x += n.vx;
+      n.y += n.vy;
+      if (Math.abs(n.x - n.baseX) > 40) n.vx *= -1;
+      if (Math.abs(n.y - n.baseY) > 40) n.vy *= -1;
+
+      n.pulse += n.pulseSpeed;
+      let currentRadius = n.radius + Math.sin(n.pulse) * 1.2;
+
+      for (let j = i + 1; j < nodes.length; j++) {
+        let n2 = nodes[j];
+        let dx = n.x - n2.x;
+        let dy = n.y - n2.y;
+        let dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 150) {
+          ctx.strokeStyle = `rgba(56, 189, 248, ${(1 - dist / 150) * 0.25})`;
+          ctx.lineWidth = 0.7;
+          ctx.beginPath();
+          ctx.moveTo(n.x, n.y);
+          ctx.lineTo(n2.x, n2.y);
+          ctx.stroke();
+        }
+      }
+
+      ctx.shadowColor = '#38bdf8';
+      ctx.shadowBlur = 10;
+      ctx.fillStyle = 'rgba(56, 189, 248, 0.85)';
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, Math.max(1, currentRadius), 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.shadowBlur = 0;
+    requestAnimationFrame(animateMap);
+  }
+  animateMap();
+})();
+
+// Tab Navigation Logic
+function switchTab(index) {
+  document.querySelectorAll('.tab-btn').forEach((btn, idx) => {
+    btn.classList.toggle('active', idx === index);
+  });
+  document.querySelectorAll('.tab-pane').forEach((pane, idx) => {
+    pane.style.display = idx === index ? 'block' : 'none';
+  });
+}
+
+// Auto Translation using MyMemory Free Translation API
+let timeoutId = null;
+function autoTranslate(direction) {
+  clearTimeout(timeoutId);
+  const isEnToUr = direction === 'en-ur';
+  const sourceId = isEnToUr ? 'en1' : 'ur2';
+  const targetId = isEnToUr ? 'ur1' : 'en2';
+  const text = document.getElementById(sourceId).value.trim();
+  const statusEl = document.getElementById('status-msg');
+
+  if (!text) {
+    document.getElementById(targetId).value = '';
+    statusEl.textContent = 'Ready for live translation...';
+    return;
+  }
+
+  statusEl.textContent = 'Translating...';
+
+  timeoutId = setTimeout(() => {
+    const langPair = isEnToUr ? 'en|ur' : 'ur|en';
+    const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${langPair}`;
+
+    fetch(url)
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.responseData) {
+          document.getElementById(targetId).value = data.responseData.translatedText;
+          statusEl.textContent = 'Translated successfully ✅';
+        } else {
+          statusEl.textContent = 'Translation failed. Try again.';
+        }
+      })
+      .catch(() => {
+        statusEl.textContent = 'Network error during translation.';
+      });
+  }, 400); // 400ms delay to prevent lagging while typing
+}
+
+function clearBox(id) {
+  document.getElementById(id).value = '';
+  if(id === 'en1') document.getElementById('ur1').value = '';
+  if(id === 'ur2') document.getElementById('en2').value = '';
+}
+
+function clearAll() {
+  document.getElementById('en1').value = '';
+  document.getElementById('ur1').value = '';
+  document.getElementById('ur2').value = '';
+  document.getElementById('en2').value = '';
+  document.getElementById('status-msg').textContent = 'Cleared all fields.';
+}
+
+function copyText(id) {
+  const val = document.getElementById(id).value;
+  if(!val) return;
+  navigator.clipboard.writeText(val).then(() => {
+    document.getElementById('status-msg').textContent = 'Copied to clipboard! 📋';
+  });
+}
+</script>
+</body>
+</html>
