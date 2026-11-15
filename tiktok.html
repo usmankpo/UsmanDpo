@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>TikTok Downloader - My Secret World</title>
+<title>Videos Downloader - My Secret World</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
 :root {
@@ -62,6 +62,7 @@ header { text-align: center; margin-bottom: 5px; }
 .eyebrow { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: #38bdf8; font-weight: 500; margin: 0 0 4px; }
 h1 { margin: 0; font-size: 26px; font-weight: 600; }
 .lede { margin: 6px 0 0; color: var(--muted); font-size: 14px; }
+
 section {
   background: var(--surface);
   border: 1px solid var(--line);
@@ -71,8 +72,10 @@ section {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  margin-bottom: 20px;
 }
-.tiktok-input-group {
+
+.input-group {
   display: flex;
   gap: 10px;
   background: #0b1329;
@@ -81,7 +84,7 @@ section {
   padding: 8px;
   align-items: center;
 }
-.tiktok-input-group input {
+.input-group input {
   flex: 1;
   background: transparent;
   border: none;
@@ -138,68 +141,132 @@ section {
   <!-- Navigation Tabs -->
   <div class="nav-tabs">
     <a href="index.html" class="tab-btn">English &harr; Urdu</a>
-    <a href="tiktok.html" class="tab-btn active">TikTok Videos</a>
+    <a href="tiktok.html" class="tab-btn active">Videos Downloader</a>
     <a href="#" class="tab-btn">Grammar Checker (Soon)</a>
   </div>
 
+  <!-- 1. TikTok Downloader Section -->
   <section>
-    <h2>TikTok Video Downloader (No Watermark)</h2>
-    <p class="lede" style="font-size: 13px; margin: 0;">Paste any TikTok video link below to fetch and download the clean video without watermark.</p>
+    <h2>TikTok Video Downloader</h2>
+    <p class="lede" style="font-size: 13px; margin: 0;">Paste any TikTok video link below to download clean video without watermark.</p>
     
-    <div class="tiktok-input-group" style="margin-top: 10px;">
-      <input type="text" id="tiktok-url" placeholder="Paste TikTok link here (e.g., https://vt.tiktok.com/...)">
-      <button type="button" class="btn-secondary" onclick="pasteTikTokLink()">📋 Paste</button>
-      <button type="button" class="btn-action" onclick="fetchTikTokVideo()">Download</button>
+    <div class="input-group" style="margin-top: 10px;">
+      <input type="text" id="tiktok-url" placeholder="Paste TikTok link here...">
+      <button type="button" class="btn-secondary" onclick="pasteLink('tiktok-url', 'tiktok-status')">📋 Paste</button>
+      <button type="button" class="btn-action" onclick="fetchVideo('tiktok')">Download</button>
     </div>
     <p class="status-text" id="tiktok-status" style="margin: 0;"></p>
 
     <div class="result-box" id="tiktok-result">
       <p style="margin:0; font-weight:600; color:#38bdf8;">Video Ready!</p>
-      <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-        <a id="download-btn-watermark" href="#" target="_blank" class="btn-action" style="text-decoration: none; font-size: 14px;">Download MP4 (No Watermark)</a>
-      </div>
+      <a id="tiktok-download-btn" href="#" target="_blank" class="btn-action" style="text-decoration: none; font-size: 14px;">Download MP4 (No Watermark)</a>
+    </div>
+  </section>
+
+  <!-- 2. Instagram Downloader Section -->
+  <section>
+    <h2>Instagram Video / Reel Downloader</h2>
+    <p class="lede" style="font-size: 13px; margin: 0;">Paste any Instagram Reel or video link below.</p>
+    
+    <div class="input-group" style="margin-top: 10px;">
+      <input type="text" id="insta-url" placeholder="Paste Instagram link here...">
+      <button type="button" class="btn-secondary" onclick="pasteLink('insta-url', 'insta-status')">📋 Paste</button>
+      <button type="button" class="btn-action" onclick="fetchVideo('instagram')">Download</button>
+    </div>
+    <p class="status-text" id="insta-status" style="margin: 0;"></p>
+
+    <div class="result-box" id="insta-result">
+      <p style="margin:0; font-weight:600; color:#38bdf8;">Video Ready!</p>
+      <a id="insta-download-btn" href="#" target="_blank" class="btn-action" style="text-decoration: none; font-size: 14px;">Download Instagram Video</a>
+    </div>
+  </section>
+
+  <!-- 3. Facebook Downloader Section -->
+  <section>
+    <h2>Facebook Video Downloader</h2>
+    <p class="lede" style="font-size: 13px; margin: 0;">Paste any public Facebook video link below.</p>
+    
+    <div class="input-group" style="margin-top: 10px;">
+      <input type="text" id="fb-url" placeholder="Paste Facebook link here...">
+      <button type="button" class="btn-secondary" onclick="pasteLink('fb-url', 'fb-status')">📋 Paste</button>
+      <button type="button" class="btn-action" onclick="fetchVideo('facebook')">Download</button>
+    </div>
+    <p class="status-text" id="fb-status" style="margin: 0;"></p>
+
+    <div class="result-box" id="fb-result">
+      <p style="margin:0; font-weight:600; color:#38bdf8;">Video Ready!</p>
+      <a id="fb-download-btn" href="#" target="_blank" class="btn-action" style="text-decoration: none; font-size: 14px;">Download Facebook Video</a>
+    </div>
+  </section>
+
+  <!-- 4. Twitter / X Downloader Section -->
+  <section>
+    <h2>Twitter / X Video Downloader</h2>
+    <p class="lede" style="font-size: 13px; margin: 0;">Paste any Twitter (X) post link containing a video.</p>
+    
+    <div class="input-group" style="margin-top: 10px;">
+      <input type="text" id="twitter-url" placeholder="Paste Twitter link here...">
+      <button type="button" class="btn-secondary" onclick="pasteLink('twitter-url', 'twitter-status')">📋 Paste</button>
+      <button type="button" class="btn-action" onclick="fetchVideo('twitter')">Download</button>
+    </div>
+    <p class="status-text" id="twitter-status" style="margin: 0;"></p>
+
+    <div class="result-box" id="twitter-result">
+      <p style="margin:0; font-weight:600; color:#38bdf8;">Video Ready!</p>
+      <a id="twitter-download-btn" href="#" target="_blank" class="btn-action" style="text-decoration: none; font-size: 14px;">Download Twitter Video</a>
     </div>
   </section>
 </main>
 
 <script>
-function pasteTikTokLink() {
+function pasteLink(inputId, statusId) {
   navigator.clipboard.readText().then(text => {
-    document.getElementById('tiktok-url').value = text;
-    document.getElementById('tiktok-status').textContent = 'Link pasted from clipboard!';
+    document.getElementById(inputId).value = text;
+    document.getElementById(statusId).textContent = 'Link pasted from clipboard!';
   }).catch(() => {
-    document.getElementById('tiktok-status').textContent = 'Please paste manually using Ctrl+V or long-tap.';
+    document.getElementById(statusId).textContent = 'Please paste manually using Ctrl+V or long-tap.';
   });
 }
 
-function fetchTikTokVideo() {
-  const urlInput = document.getElementById('tiktok-url').value.trim();
-  const statusEl = document.getElementById('tiktok-status');
-  const resultBox = document.getElementById('tiktok-result');
+function fetchVideo(platform) {
+  let inputId, statusId, resultId, btnId;
+  
+  if (platform === 'tiktok') {
+    inputId = 'tiktok-url'; statusId = 'tiktok-status'; resultId = 'tiktok-result'; btnId = 'tiktok-download-btn';
+  } else if (platform === 'instagram') {
+    inputId = 'insta-url'; statusId = 'insta-status'; resultId = 'insta-result'; btnId = 'insta-download-btn';
+  } else if (platform === 'facebook') {
+    inputId = 'fb-url'; statusId = 'fb-status'; resultId = 'fb-result'; btnId = 'fb-download-btn';
+  } else if (platform === 'twitter') {
+    inputId = 'twitter-url'; statusId = 'twitter-status'; resultId = 'twitter-result'; btnId = 'twitter-download-btn';
+  }
+
+  const urlInput = document.getElementById(inputId).value.trim();
+  const statusEl = document.getElementById(statusId);
+  const resultBox = document.getElementById(resultId);
 
   if (!urlInput) {
-    statusEl.textContent = 'Please enter or paste a valid TikTok link first!';
+    statusEl.textContent = 'Please enter or paste a valid link first!';
     resultBox.style.display = 'none';
     return;
   }
 
-  statusEl.textContent = 'Processing video link... Please wait...';
+  statusEl.textContent = 'Processing link... Please wait...';
   resultBox.style.display = 'none';
 
+  // Using reliable multi-platform downloader API endpoint
   const apiEndpoint = `https://www.tikwm.com/api/?url=${encodeURIComponent(urlInput)}`;
 
   fetch(apiEndpoint)
     .then(res => res.json())
     .then(data => {
       if (data && data.code === 0 && data.data) {
-        const videoData = data.data;
-        const downloadUrl = videoData.play;
-
-        document.getElementById('download-btn-watermark').href = downloadUrl;
+        const downloadUrl = data.data.play || data.data.url;
+        document.getElementById(btnId).href = downloadUrl;
         resultBox.style.display = 'flex';
         statusEl.textContent = 'Video fetched successfully! Click download below. 👇';
       } else {
-        statusEl.textContent = 'Could not fetch video. Make sure the link is correct.';
+        statusEl.textContent = 'Could not fetch video. Make sure the link is correct & public.';
       }
     })
     .catch(() => {
