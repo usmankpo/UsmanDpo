@@ -72,7 +72,6 @@ section {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  margin-bottom: 20px;
 }
 
 .input-group {
@@ -147,10 +146,10 @@ section {
 
   <!-- 1. TikTok Downloader Section -->
   <section>
-    <h2>TikTok Video Downloader</h2>
-    <p class="lede" style="font-size: 13px; margin: 0;">Paste any TikTok video link below to download clean video without watermark.</p>
+    <h2>1. TikTok Video Downloader (No Watermark)</h2>
+    <p class="lede" style="font-size: 13px; margin: 0;">Paste any TikTok video link below for direct no-watermark MP4 download.</p>
     
-    <div class="input-group" style="margin-top: 10px;">
+    <div class="input-group">
       <input type="text" id="tiktok-url" placeholder="Paste TikTok link here...">
       <button type="button" class="btn-secondary" onclick="pasteLink('tiktok-url', 'tiktok-status')">📋 Paste</button>
       <button type="button" class="btn-action" onclick="fetchTikTok()">Download</button>
@@ -163,57 +162,21 @@ section {
     </div>
   </section>
 
-  <!-- 2. Instagram Downloader Section -->
+  <!-- 2. Universal Social Downloader (Instagram, Facebook, Twitter/X) -->
   <section>
-    <h2>Instagram Video / Reel Downloader</h2>
-    <p class="lede" style="font-size: 13px; margin: 0;">Paste any Instagram Reel or video link below.</p>
+    <h2>2. Social Video Downloader (Instagram / FB / X)</h2>
+    <p class="lede" style="font-size: 13px; margin: 0;">Paste any Instagram Reel, Facebook, or Twitter (X) video link below.</p>
     
-    <div class="input-group" style="margin-top: 10px;">
-      <input type="text" id="insta-url" placeholder="Paste Instagram link here...">
-      <button type="button" class="btn-secondary" onclick="pasteLink('insta-url', 'insta-status')">📋 Paste</button>
-      <button type="button" class="btn-action" onclick="fetchInstagram()">Download</button>
+    <div class="input-group">
+      <input type="text" id="social-url" placeholder="Paste Instagram, Facebook, or Twitter link here...">
+      <button type="button" class="btn-secondary" onclick="pasteLink('social-url', 'social-status')">📋 Paste</button>
+      <button type="button" class="btn-action" onclick="prepareSocialVideo()">Download</button>
     </div>
-    <p class="status-text" id="insta-status" style="margin: 0;"></p>
+    <p class="status-text" id="social-status" style="margin: 0;"></p>
 
-    <div class="result-box" id="insta-result">
+    <div class="result-box" id="social-result">
       <p style="margin:0; font-weight:600; color:#38bdf8;">Video Ready!</p>
-      <a id="insta-download-btn" href="#" target="_blank" class="btn-action" style="text-decoration: none; font-size: 14px;">Download Instagram Video</a>
-    </div>
-  </section>
-
-  <!-- 3. Facebook Downloader Section -->
-  <section>
-    <h2>Facebook Video Downloader</h2>
-    <p class="lede" style="font-size: 13px; margin: 0;">Paste any public Facebook video link below.</p>
-    
-    <div class="input-group" style="margin-top: 10px;">
-      <input type="text" id="fb-url" placeholder="Paste Facebook link here...">
-      <button type="button" class="btn-secondary" onclick="pasteLink('fb-url', 'fb-status')">📋 Paste</button>
-      <button type="button" class="btn-action" onclick="fetchFacebook()">Download</button>
-    </div>
-    <p class="status-text" id="fb-status" style="margin: 0;"></p>
-
-    <div class="result-box" id="fb-result">
-      <p style="margin:0; font-weight:600; color:#38bdf8;">Video Ready!</p>
-      <a id="fb-download-btn" href="#" target="_blank" class="btn-action" style="text-decoration: none; font-size: 14px;">Download Facebook Video</a>
-    </div>
-  </section>
-
-  <!-- 4. Twitter / X Downloader Section -->
-  <section>
-    <h2>Twitter / X Video Downloader</h2>
-    <p class="lede" style="font-size: 13px; margin: 0;">Paste any Twitter (X) post link containing a video.</p>
-    
-    <div class="input-group" style="margin-top: 10px;">
-      <input type="text" id="twitter-url" placeholder="Paste Twitter link here...">
-      <button type="button" class="btn-secondary" onclick="pasteLink('twitter-url', 'twitter-status')">📋 Paste</button>
-      <button type="button" class="btn-action" onclick="fetchTwitter()">Download</button>
-    </div>
-    <p class="status-text" id="twitter-status" style="margin: 0;"></p>
-
-    <div class="result-box" id="twitter-result">
-      <p style="margin:0; font-weight:600; color:#38bdf8;">Video Ready!</p>
-      <a id="twitter-download-btn" href="#" target="_blank" class="btn-action" style="text-decoration: none; font-size: 14px;">Download Twitter Video</a>
+      <a id="social-download-btn" href="#" target="_blank" class="btn-action" style="text-decoration: none; font-size: 14px;">Open &amp; Download Video</a>
     </div>
   </section>
 </main>
@@ -228,7 +191,7 @@ function pasteLink(inputId, statusId) {
   });
 }
 
-// 1. TikTok Fetcher
+// 1. Direct TikTok Fetcher
 function fetchTikTok() {
   const url = document.getElementById('tiktok-url').value.trim();
   const statusEl = document.getElementById('tiktok-status');
@@ -251,68 +214,24 @@ function fetchTikTok() {
     }).catch(() => { statusEl.textContent = 'Network error.'; });
 }
 
-// 2. Instagram Fetcher (CORS Safe Direct Gateway)
-function fetchInstagram() {
-  const url = document.getElementById('insta-url').value.trim();
-  const statusEl = document.getElementById('insta-status');
-  const resultBox = document.getElementById('insta-result');
+// 2. Universal Auto-Paste Bridge (Instagram, Facebook, Twitter/X)
+function prepareSocialVideo() {
+  const url = document.getElementById('social-url').value.trim();
+  const statusEl = document.getElementById('social-status');
+  const resultBox = document.getElementById('social-result');
 
-  if (!url) { statusEl.textContent = 'Please enter an Instagram link!'; resultBox.style.display = 'none'; return; }
-  statusEl.textContent = 'Generating download link...';
-  resultBox.style.display = 'none';
+  if (!url) {
+    statusEl.textContent = 'Please paste a valid Instagram, Facebook, or Twitter link!';
+    resultBox.style.display = 'none';
+    return;
+  }
 
-  // Using public high-speed proxy API endpoint
-  fetch(`https://api.allorigins.win/get?url=${encodeURIComponent('https://www.instagram.com/api/v1/oembed/?url=' + url)}`)
-    .then(res => res.json())
-    .then(response => {
-      if (response && response.contents) {
-        // Direct safe redirect link for media processing
-        document.getElementById('insta-download-btn').href = `https://snapinsta.app/?url=${encodeURIComponent(url)}`;
-        resultBox.style.display = 'flex';
-        statusEl.textContent = 'Ready! Click below to download from server 👇';
-      } else {
-        throw new Error();
-      }
-    }).catch(() => {
-      // Fallback direct web bridge
-      document.getElementById('insta-download-btn').href = `https://savefrom.net/?url=${encodeURIComponent(url)}`;
-      resultBox.style.display = 'flex';
-      statusEl.textContent = 'Ready! Click below to download 👇';
-    });
-}
-
-// 3. Facebook Fetcher (CORS Safe Direct Gateway)
-function fetchFacebook() {
-  const url = document.getElementById('fb-url').value.trim();
-  const statusEl = document.getElementById('fb-status');
-  const resultBox = document.getElementById('fb-result');
-
-  if (!url) { statusEl.textContent = 'Please enter a Facebook link!'; resultBox.style.display = 'none'; return; }
-  statusEl.textContent = 'Generating download link...';
-  resultBox.style.display = 'none';
-
-  setTimeout(() => {
-    document.getElementById('fb-download-btn').href = `https://fdown.net/download.php?url=${encodeURIComponent(url)}`;
-    resultBox.style.display = 'flex';
-    statusEl.textContent = 'Ready! Click below to download Facebook video 👇';
-  }, 400);
-}
-
-// 4. Twitter Fetcher (CORS Safe Direct Gateway)
-function fetchTwitter() {
-  const url = document.getElementById('twitter-url').value.trim();
-  const statusEl = document.getElementById('twitter-status');
-  const resultBox = document.getElementById('twitter-result');
-
-  if (!url) { statusEl.textContent = 'Please enter a Twitter link!'; resultBox.style.display = 'none'; return; }
-  statusEl.textContent = 'Generating download link...';
-  resultBox.style.display = 'none';
-
-  setTimeout(() => {
-    document.getElementById('twitter-download-btn').href = `https://ssstwitter.com/?url=${encodeURIComponent(url)}`;
-    resultBox.style.display = 'flex';
-    statusEl.textContent = 'Ready! Click below to download Twitter video 👇';
-  }, 400);
+  // Using #url= parameter so SaveFrom auto-pastes and loads the video immediately
+  const bridgeUrl = `https://en1.savefrom.net/19wr/#url=${encodeURIComponent(url)}`;
+  document.getElementById('social-download-btn').href = bridgeUrl;
+  
+  resultBox.style.display = 'flex';
+  statusEl.textContent = 'Ready! Click below to auto-load and download 👇';
 }
 </script>
 </body>
