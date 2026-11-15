@@ -153,7 +153,7 @@ section {
     <div class="input-group" style="margin-top: 10px;">
       <input type="text" id="tiktok-url" placeholder="Paste TikTok link here...">
       <button type="button" class="btn-secondary" onclick="pasteLink('tiktok-url', 'tiktok-status')">📋 Paste</button>
-      <button type="button" class="btn-action" onclick="fetchVideo('tiktok')">Download</button>
+      <button type="button" class="btn-action" onclick="fetchTikTok()">Download</button>
     </div>
     <p class="status-text" id="tiktok-status" style="margin: 0;"></p>
 
@@ -171,7 +171,7 @@ section {
     <div class="input-group" style="margin-top: 10px;">
       <input type="text" id="insta-url" placeholder="Paste Instagram link here...">
       <button type="button" class="btn-secondary" onclick="pasteLink('insta-url', 'insta-status')">📋 Paste</button>
-      <button type="button" class="btn-action" onclick="fetchVideo('instagram')">Download</button>
+      <button type="button" class="btn-action" onclick="fetchInstagram()">Download</button>
     </div>
     <p class="status-text" id="insta-status" style="margin: 0;"></p>
 
@@ -189,7 +189,7 @@ section {
     <div class="input-group" style="margin-top: 10px;">
       <input type="text" id="fb-url" placeholder="Paste Facebook link here...">
       <button type="button" class="btn-secondary" onclick="pasteLink('fb-url', 'fb-status')">📋 Paste</button>
-      <button type="button" class="btn-action" onclick="fetchVideo('facebook')">Download</button>
+      <button type="button" class="btn-action" onclick="fetchFacebook()">Download</button>
     </div>
     <p class="status-text" id="fb-status" style="margin: 0;"></p>
 
@@ -207,7 +207,7 @@ section {
     <div class="input-group" style="margin-top: 10px;">
       <input type="text" id="twitter-url" placeholder="Paste Twitter link here...">
       <button type="button" class="btn-secondary" onclick="pasteLink('twitter-url', 'twitter-status')">📋 Paste</button>
-      <button type="button" class="btn-action" onclick="fetchVideo('twitter')">Download</button>
+      <button type="button" class="btn-action" onclick="fetchTwitter()">Download</button>
     </div>
     <p class="status-text" id="twitter-status" style="margin: 0;"></p>
 
@@ -228,50 +228,112 @@ function pasteLink(inputId, statusId) {
   });
 }
 
-function fetchVideo(platform) {
-  let inputId, statusId, resultId, btnId;
-  
-  if (platform === 'tiktok') {
-    inputId = 'tiktok-url'; statusId = 'tiktok-status'; resultId = 'tiktok-result'; btnId = 'tiktok-download-btn';
-  } else if (platform === 'instagram') {
-    inputId = 'insta-url'; statusId = 'insta-status'; resultId = 'insta-result'; btnId = 'insta-download-btn';
-  } else if (platform === 'facebook') {
-    inputId = 'fb-url'; statusId = 'fb-status'; resultId = 'fb-result'; btnId = 'fb-download-btn';
-  } else if (platform === 'twitter') {
-    inputId = 'twitter-url'; statusId = 'twitter-status'; resultId = 'twitter-result'; btnId = 'twitter-download-btn';
-  }
+// 1. TikTok Fetcher
+function fetchTikTok() {
+  const url = document.getElementById('tiktok-url').value.trim();
+  const statusEl = document.getElementById('tiktok-status');
+  const resultBox = document.getElementById('tiktok-result');
 
-  const urlInput = document.getElementById(inputId).value.trim();
-  const statusEl = document.getElementById(statusId);
-  const resultBox = document.getElementById(resultId);
-
-  if (!urlInput) {
-    statusEl.textContent = 'Please enter or paste a valid link first!';
-    resultBox.style.display = 'none';
-    return;
-  }
-
-  statusEl.textContent = 'Processing link... Please wait...';
+  if (!url) { statusEl.textContent = 'Please enter a TikTok link!'; resultBox.style.display = 'none'; return; }
+  statusEl.textContent = 'Processing TikTok link...';
   resultBox.style.display = 'none';
 
-  // Using reliable multi-platform downloader API endpoint
-  const apiEndpoint = `https://www.tikwm.com/api/?url=${encodeURIComponent(urlInput)}`;
-
-  fetch(apiEndpoint)
+  fetch(`https://www.tikwm.com/api/?url=${encodeURIComponent(url)}`)
     .then(res => res.json())
     .then(data => {
       if (data && data.code === 0 && data.data) {
-        const downloadUrl = data.data.play || data.data.url;
-        document.getElementById(btnId).href = downloadUrl;
+        document.getElementById('tiktok-download-btn').href = data.data.play;
         resultBox.style.display = 'flex';
-        statusEl.textContent = 'Video fetched successfully! Click download below. 👇';
+        statusEl.textContent = 'Video ready! Click below 👇';
       } else {
-        statusEl.textContent = 'Could not fetch video. Make sure the link is correct & public.';
+        statusEl.textContent = 'Could not fetch video. Check link.';
       }
-    })
-    .catch(() => {
-      statusEl.textContent = 'Network error. Please check your internet connection.';
-    });
+    }).catch(() => { statusEl.textContent = 'Network error.'; });
+}
+
+// 2. Instagram Fetcher
+function fetchInstagram() {
+  const url = document.getElementById('insta-url').value.trim();
+  const statusEl = document.getElementById('insta-status');
+  const resultBox = document.getElementById('insta-result');
+
+  if (!url) { statusEl.textContent = 'Please enter an Instagram link!'; resultBox.style.display = 'none'; return; }
+  statusEl.textContent = 'Processing Instagram link...';
+  resultBox.style.display = 'none';
+
+  // Using public cobalt/social API extractor
+  fetch(`https://api.cobalt.tools/api/json`, {
+    method: 'POST',
+    headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+    body: JSON.stringify({ url: url })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data && (data.url || data.picker)) {
+      const downloadUrl = data.url || data.picker[0].url;
+      document.getElementById('insta-download-btn').href = downloadUrl;
+      resultBox.style.display = 'flex';
+      statusEl.textContent = 'Video ready! Click below 👇';
+    } else {
+      statusEl.textContent = 'Could not fetch Instagram video. Ensure it is public.';
+    }
+  }).catch(() => { statusEl.textContent = 'Network error.'; });
+}
+
+// 3. Facebook Fetcher
+function fetchFacebook() {
+  const url = document.getElementById('fb-url').value.trim();
+  const statusEl = document.getElementById('fb-status');
+  const resultBox = document.getElementById('fb-result');
+
+  if (!url) { statusEl.textContent = 'Please enter a Facebook link!'; resultBox.style.display = 'none'; return; }
+  statusEl.textContent = 'Processing Facebook link...';
+  resultBox.style.display = 'none';
+
+  fetch(`https://api.cobalt.tools/api/json`, {
+    method: 'POST',
+    headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+    body: JSON.stringify({ url: url })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data && (data.url || data.picker)) {
+      const downloadUrl = data.url || data.picker[0].url;
+      document.getElementById('fb-download-btn').href = downloadUrl;
+      resultBox.style.display = 'flex';
+      statusEl.textContent = 'Video ready! Click below 👇';
+    } else {
+      statusEl.textContent = 'Could not fetch Facebook video. Ensure it is public.';
+    }
+  }).catch(() => { statusEl.textContent = 'Network error.'; });
+}
+
+// 4. Twitter Fetcher
+function fetchTwitter() {
+  const url = document.getElementById('twitter-url').value.trim();
+  const statusEl = document.getElementById('twitter-status');
+  const resultBox = document.getElementById('twitter-result');
+
+  if (!url) { statusEl.textContent = 'Please enter a Twitter link!'; resultBox.style.display = 'none'; return; }
+  statusEl.textContent = 'Processing Twitter link...';
+  resultBox.style.display = 'none';
+
+  fetch(`https://api.cobalt.tools/api/json`, {
+    method: 'POST',
+    headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+    body: JSON.stringify({ url: url })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data && (data.url || data.picker)) {
+      const downloadUrl = data.url || data.picker[0].url;
+      document.getElementById('twitter-download-btn').href = downloadUrl;
+      resultBox.style.display = 'flex';
+      statusEl.textContent = 'Video ready! Click below 👇';
+    } else {
+      statusEl.textContent = 'Could not fetch Twitter video.';
+    }
+  }).catch(() => { statusEl.textContent = 'Network error.'; });
 }
 </script>
 </body>
