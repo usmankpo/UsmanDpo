@@ -58,10 +58,43 @@ body {
   color: #fff;
   border-color: var(--accent);
 }
-header { text-align: center; margin-bottom: 5px; }
-.eyebrow { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: #38bdf8; font-weight: 500; margin: 0 0 4px; }
-h1 { margin: 0; font-size: 26px; font-weight: 600; }
-.lede { margin: 6px 0 0; color: var(--muted); font-size: 14px; }
+
+/* Header with Side Profile Image */
+header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(30, 41, 59, 0.4);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 16px 20px;
+  margin-bottom: 5px;
+}
+.profile-img {
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--accent);
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+.header-text {
+  text-align: left;
+}
+.eyebrow { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: #38bdf8; font-weight: 500; margin: 0 0 2px; }
+h1 { margin: 0; font-size: 22px; font-weight: 600; }
+.lede { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+
+@media (max-width: 500px) {
+  header {
+    flex-direction: column;
+    text-align: center;
+  }
+  .header-text {
+    text-align: center;
+  }
+}
 
 section {
   background: var(--surface);
@@ -132,9 +165,12 @@ section {
 
 <main class="wrap">
   <header>
-    <p class="eyebrow">MUHAMMAD USMAN - AI Suite</p>
-    <h1>Smart Multiple-Tool Portal</h1>
-    <p class="lede">A centralized hub for real-time translation and smart utility tools.</p>
+    <img src="profile.jpg" alt="Muhammad Usman" class="profile-img">
+    <div class="header-text">
+      <p class="eyebrow">MUHAMMAD USMAN - AI Suite</p>
+      <h1>Smart Multiple-Tool Portal</h1>
+      <p class="lede">A centralized hub for real-time translation and smart utility tools.</p>
+    </div>
   </header>
 
   <!-- Navigation Tabs -->
@@ -147,7 +183,7 @@ section {
   <!-- 1. TikTok Downloader Section -->
   <section>
     <h2>TikTok Video Downloader (Without Watermark)</h2>
-    <p class="lede" style="font-size: 13px; margin: 0;">Paste any TikTok video link below to instantly generate a clean, watermark-free download.</p>
+    <p class="lede" style="font-size: 13px; margin: 0;">Enter your TikTok video link below to instantly generate a clean, watermark-free download.</p>
     
     <div class="input-group">
       <input type="text" id="tiktok-url" placeholder="Paste TikTok link here...">
@@ -226,7 +262,6 @@ function prepareSocialVideo() {
     return;
   }
 
-  // Using #url= parameter so SaveFrom auto-pastes and loads the video immediately
   const bridgeUrl = `https://en1.savefrom.net/19wr/#url=${encodeURIComponent(url)}`;
   document.getElementById('social-download-btn').href = bridgeUrl;
   
